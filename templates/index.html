@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title></title>
+{% endblock %}
+
+
+{% block body %}
+<div class="row">
+	<div class="col-sm-6">
+		<h1>Bookit 🔥</h1>
+		<p class="lead">Find the latest trendy concert tickets.</p>
+		<h3>
+			<a href="/Concert"><button class="btn btn-primary btn-lg">Find a concert</button></a>
+			<a href="/Concert/create"><button class="btn btn-default btn-lg">Post a venue</button></a>
+		</h3>
+		<h3>
+			<a href="/vendor"><button class="btn btn-primary btn-lg">Update your Venue</button></a>
+			<a href="/vendor/create"><button class="btn btn-default btn-lg">Commercial Buyers</button></a>
+		</h3>
+		<p class="lead">Want to know more about us?</p>
+		<h3>
+			<a href="/shows/create"><button class="btn btn-default btn-lg">Contact US</button></a>
+		</h3>
+	</div>
+	<div class="col-sm-6 hidden-sm hidden-xs">
+		<img id="front-splash" src="{{ url_for('static',filename='images.jpg') }}" alt="Front Photo of Musical Band" />
+	</div>
+</div>
+{% endblock %}
