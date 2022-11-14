@@ -1,33 +1,34 @@
-from flask import Flask, render_template, url_for, request, redirect
+from flask import Flask, render_template, url_for, request, redirect,flash
 from datetime import datetime
 from flask_sqlalchemy import SQLAlchemy
 import dateutil.parser
 import babel
+from forms import RegistrationForm,LoginForm, newForm
+import email_validator
+
 app = Flask(__name__)
 
+app.config['SECRET_KEY']='f3ed7d6ffe91ef8f3f033c7a21482a47'
+
+app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///project1.db'
 
 
-app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
-def create_app():
-    app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///test.db'
-    db.init_app(app)
-    return app
+
 db = SQLAlchemy(app)
-
-
 
 
 class Bookit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     content = db.Column(db.String(200), nullable=False)
-    date_created = db.Column(db.DateTime, default=datetime.utcnow)
+    Venue=db.Column(db.String(200), nullable=False)
+    date_created=db.Column(db.DateTime, default=datetime)
+    def _repr_(self):
+        return '<Name %r>' % self.id
 
-    def __repr__(self):
-        return '<Task %r>' % self.id
-
-with app.app_context():
-    db.create_all()
-
+def create_app():
+    app.config['SQLALCHEMY_DATABASE_URI']='sqlite:///Project1.db'
+    db.init_app(app)
+    return app
 
 class Venue(db.Model):
     __tablename__ = 'Venue'
@@ -72,8 +73,7 @@ class Venue(db.Model):
             'name' :self.name,
             'city' : self.city,
             'state' :self.state,
-        }
-    
+        }   
 
 class Show(db.Model):
   __tablename__='shows'
@@ -187,41 +187,17 @@ class Artist(db.Model):
 
         }
 
+with app.app_context():
+    db.create_all()
 
 
 @app.route('/')
 def index():
    return render_template('index.html')
 
-
-@app.route('/venues')
-def venue():
-  current_time = datetime.now().strftime('%Y-%m-%d %H:%S:%M')
-  venues = Venue.query.group_by(Venue.id, Venue.state, Venue.city).all()
-  venue_state_and_city = ''
-  data = []
-  for venue in venues:
-    print(venue)
-    upcoming_shows = venue.shows.filter(Show.start_time > current_time).all()
-    if venue_state_and_city == venue.city + venue.state:
-      data[len(data) - 1]["venues"].append({
-        "id": venue.id,
-        "name":venue.name,
-        "num_upcoming_shows": len(upcoming_shows) # a count of the number of shows
-      })
-    else:
-      venue_state_and_city == venue.city + venue.state
-      data.append({
-        "city":venue.city,
-        "state":venue.state,
-        "venues": [{
-          "id": venue.id,
-          "name":venue.name,
-          "num_upcoming_shows": len(upcoming_shows)
-        }]
-      })
-  
-    return render_template('new_venue.html',areas=data)
+@app.route('/Concert')
+def Concert():
+  return render_template('Venue_owner.html')
 
 @app.route('/artists')
 def Artists():
@@ -231,6 +207,43 @@ def Artists():
 def Shows():
     return render_template('index.html')
 
+@app.route("/register", methods=['GET', 'POST'])
+def register():
+    form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
+    return render_template('register.html', title='Register', form=form)
+
+
+@app.route("/login", methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'admin@blog.com' and form.password.data == 'password':
+            flash('You have been logged in!', 'success')
+            return redirect(url_for('home'))
+        else:
+            flash('Login Unsuccessful. Please check username and password', 'danger')
+    return render_template('login.html', title='Login', form=form)
+
+@app.route("/Concert/create", methods=['GET', 'POST'])
+def new():
+    form = newForm()
+    if form.validate_on_submit():
+        flash(f'Account created for {form.username.data}!', 'success')
+        return redirect(url_for('home'))
+    return render_template('new_venue.html', title='newForm', form=form)
+
+
+#AERAF MAKE HTML Update your Venue
+@app.route("/update")
+def update():
+    return render_template('')
+
+@app.route("/commercial")
+def commercial():
+    return render_template('')
 
 if __name__ == "__main__":
     app.run(debug=True)
