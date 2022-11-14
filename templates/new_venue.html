@@ -1,31 +1,39 @@
-{% extends 'layouts/main.html' %}
-{% block title %}New Venue{% endblock %}
-{% block content %}
-  <div class="form-wrapper">
-    <form method="post" class="form">
-      <h3 class="form-heading">List a new venue <a href="{{ url_for('index') }}" title="Back to homepage"><i class="fa fa-home pull-right"></i></a></h3>
-      <div class="form-group">
-        <label for="name">Name</label>
-        {{ form.name(class_ = 'form-control', autofocus = true) }}
-      </div>
-      <div class="form-group">
-          <label>City & State</label>
-          <div class="form-inline">
-            <div class="form-group">
-              {{ form.city(class_ = 'form-control', placeholder='City', autofocus = true) }}
-            </div>
-            <div class="form-group">
-              {{ form.state(class_ = 'form-control', placeholder='State', autofocus = true) }}
-            </div>
-          </div>
-      </div>
-      <div class="form-group">
-        <label for="address">Address</label>
-        {{ form.address(class_ = 'form-control', autofocus = true) }}
-      </div>
-      <div class="form-group">
-          <label for="phone">Phone</label>
-          {{ form.phone(class_ = 'form-control', placeholder='xxx-xxx-xxxx', autofocus = true) }}
-       
-  </div>
+{% extends 'base.html' %}
+
+{% block head %}
+<title></title>
+{% endblock %}
+{% block body %}
+<div class="row">
+	<div class="col-sm-6">
+		{% with messages = get_flashed_messages(with_categories=true) %}
+		{% if messages %}
+		  {% for category, message in messages %}
+			<div class="alert alert-{{ category }}">
+			  {{ message }}
+			</div>
+		  {% endfor %}
+		{% endif %}
+	  {% endwith %}
+	  {% block content %}{% endblock %}
+		<h1>Bookit 🔥</h1>
+		<p class="lead">Find the latest trendy concert tickets.</p>
+		<h3>
+			<a href="/Concert"><button class="btn btn-primary btn-lg">Find a concert</button></a>
+			<a href="/Concert/create"><button class="btn btn-default btn-lg">Post a venue</button></a>
+		</h3>
+		<h3>
+			<a href="/update"><button class="btn btn-primary btn-lg">Update your Venue</button></a>
+			<a href="/commercial"><button class="btn btn-default btn-lg">Commercial Buyers</button></a>
+			<a href="/register"><button class="btn btn-primary btn-lg">Register</button></a>
+		</h3>
+		<p class="lead">Want to know more about us?</p>
+		<h3>
+			<a href="/shows/create"><button class="btn btn-default btn-lg">Contact US</button></a>
+		</h3>
+	</div>
+	<div class="col-sm-6 hidden-sm hidden-xs">
+		<img id="front-splash" src="{{ url_for('static',filename='images.jpg') }}" alt="Front Photo of Musical Band" />
+	</div>
+</div>
 {% endblock %}
